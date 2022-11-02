@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "subscribing_api",
+    "notifier",
+    "database_api",
+]
