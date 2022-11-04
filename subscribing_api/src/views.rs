@@ -1,24 +1,22 @@
+use crate::views::subscriptions::{
+    create_subscription::create_subscription, delete_subscription::delete_subscription,
+    get_subscriptions::get_subscriptions, update_subscription::update_subscription,
+};
+use axum::{
+    extract::Extension,
+    routing::{delete, get, post, put},
+    Router,
+};
+use database_api::service::Service;
 use std::sync::Arc;
 
-use axum::{
-    body::Full,
-    extract::{Extension, Path, Query},
-    http::StatusCode,
-    routing::{delete, get, post, put},
-    Json, Router,
-};
-use database_api::{full_subscription::FullSubscription, service::Service};
+pub mod subscriptions;
 
-use crate::view::{
-    create_subscription, delete_subscription, get_subscriptions, update_subscription, Email,
-    Pagination,
-};
-
-pub trait App {
+pub trait FromService {
     fn from_service(service: Service) -> Self;
 }
 
-impl App for Router {
+impl FromService for Router {
     fn from_service(service: Service) -> Router {
         let service = Arc::new(service);
 

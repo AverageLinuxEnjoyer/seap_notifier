@@ -1,15 +1,13 @@
 use anyhow::Result;
-use app::App;
-use axum::{
-    routing::{get, post},
-    Json, Router,
-};
-use database_api::{full_subscription::FullSubscription, service::Service};
-use std::{net::SocketAddr, sync::Arc};
-use view::create_subscription;
+use axum::Router;
+use database_api::service::Service;
+use std::net::SocketAddr;
+use views::FromService;
+// use app::App;
 
-pub mod app;
-pub mod view;
+// pub mod app;
+// pub mod view;
+pub mod views;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -20,8 +18,7 @@ async fn main() -> Result<()> {
 
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
-        .await
-        .unwrap();
+        .await?;
 
     Ok(())
 }

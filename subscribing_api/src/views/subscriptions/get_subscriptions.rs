@@ -1,8 +1,6 @@
 use axum::{
-    body::Full,
-    extract::{Extension, Path, Query},
+    extract::{Extension, Query},
     http::StatusCode,
-    response::IntoResponse,
     Json,
 };
 use database_api::{full_subscription::FullSubscription, service::Service};
@@ -57,48 +55,5 @@ pub async fn get_subscriptions(
         (Some(params), None) => get_user_subscriptions(sv, params).await,
         (None, Some(params)) => get_all_subscriptions(sv, params).await,
         (None, None) => (StatusCode::CONFLICT, Json(Err("Expected either an email parameter or pagination parameters, but neither were provided.".to_string()))),
-    }
-}
-
-pub async fn create_subscription(
-    sv: Extension<Arc<Service>>,
-    Json(payload): Json<FullSubscription>,
-) -> (StatusCode, Json<Result<FullSubscription, String>>) {
-    let res = sv.subscriptions.create(payload).await;
-
-    match res {
-        Ok(subscription) => (StatusCode::CREATED, Json(Ok(subscription))),
-        Err(err) => (StatusCode::NOT_ACCEPTABLE, Json(Err(err.to_string()))),
-    }
-}
-
-pub async fn delete_subscription(
-    sv: Extension<Arc<Service>>,
-    Path(id): Path<u32>,
-) -> (StatusCode, Json<Result<String, String>>) {
-    let res = sv.subscriptions.delete(id).await;
-
-    match res {
-        Ok(_) => (
-            StatusCode::OK,
-            Json(Ok("Subscription deleted.".to_string())),
-        ),
-        Err(err) => (StatusCode::NOT_ACCEPTABLE, Json(Err(err.to_string()))),
-    }
-}
-
-pub async fn update_subscription(
-    sv: Extension<Arc<Service>>,
-    Path(id): Path<u32>,
-    Json(payload): Json<FullSubscription>,
-) -> (StatusCode, Json<Result<String, String>>) {
-    let res = sv.subscriptions.update(id, payload).await;
-
-    match res {
-        Ok(_) => (
-            StatusCode::OK,
-            Json(Ok("Subscription updated.".to_string())),
-        ),
-        Err(err) => (StatusCode::NOT_ACCEPTABLE, Json(Err(err.to_string()))),
     }
 }
