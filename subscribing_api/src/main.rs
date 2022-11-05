@@ -3,10 +3,7 @@ use axum::Router;
 use database_api::service::Service;
 use std::net::SocketAddr;
 use views::FromService;
-// use app::App;
 
-// pub mod app;
-// pub mod view;
 pub mod views;
 
 #[tokio::main]

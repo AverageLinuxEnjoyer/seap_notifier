@@ -1,6 +1,6 @@
 use crate::views::subscriptions::{
-    create_subscription::create_subscription, delete_subscription::delete_subscription,
-    get_subscriptions::get_subscriptions, update_subscription::update_subscription,
+    create::create_subscription, delete::delete_subscription, get::get_subscriptions,
+    update::update_subscription,
 };
 use axum::{
     extract::Extension,
@@ -11,6 +11,7 @@ use database_api::service::Service;
 use std::sync::Arc;
 
 pub mod subscriptions;
+pub mod users;
 
 pub trait FromService {
     fn from_service(service: Service) -> Self;
