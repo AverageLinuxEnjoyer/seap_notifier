@@ -6,6 +6,10 @@ use sqlx::{query_as, query_scalar};
 impl Subscriptions {
     #[cfg(feature = "read")]
     pub async fn get(&self, email: &str) -> Result<Vec<FullSubscription>> {
+        use crate::service::subscriptions::utils::get_contract_descriptions;
+
+        use super::utils::get_contract_objects;
+
         let mut tx = self.pool.begin().await?;
 
         let subscriptions = query_as!(
@@ -18,21 +22,9 @@ impl Subscriptions {
 
         let mut res = vec![];
         for sub in subscriptions {
-            let contract_objects = query_scalar!(
-                "SELECT value FROM contract_objects WHERE subscription_id = ?",
-                sub.id
-            )
-            .fetch_all(&mut tx)
-            .await
-            .ok();
+            let contract_objects = get_contract_objects(&mut tx, sub.id).await.ok();
 
-            let contract_descriptions = query_scalar!(
-                "SELECT value FROM contract_descriptions WHERE subscription_id = ?",
-                sub.id
-            )
-            .fetch_all(&mut tx)
-            .await
-            .ok();
+            let contract_descriptions = get_contract_descriptions(&mut tx, sub.id).await.ok();
 
             res.push(FullSubscription {
                 id: Some(sub.id),
@@ -43,6 +35,8 @@ impl Subscriptions {
                 contract_desc: contract_descriptions,
             })
         }
+
+        tx.commit().await?;
 
         Ok(res)
     }

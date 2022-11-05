@@ -6,9 +6,13 @@ use sqlx::{query, query_as, query_scalar};
 impl Subscriptions {
     #[cfg(feature = "create")]
     pub async fn create(&self, subscription: FullSubscription) -> Result<FullSubscription> {
+        use crate::service::subscriptions::utils::create_contract_description;
+
+        use super::utils::create_contract_object;
+
         let mut tx = self.pool.begin().await?;
 
-        let clone = subscription.clone();
+        let created_subscription = subscription.clone();
 
         let user_id = query_scalar!("SELECT id FROM users WHERE email = ?", subscription.email)
             .fetch_one(&mut tx)
@@ -43,21 +47,15 @@ impl Subscriptions {
                 .await?;
 
         if let Some(contract_object) = subscription.contract_object {
-            Subscriptions::create_contract_object(&mut tx, subscription_id, contract_object)
-                .await?;
+            create_contract_object(&mut tx, subscription_id, contract_object).await?;
         }
 
         if let Some(contract_description) = subscription.contract_desc {
-            Subscriptions::create_contract_description(
-                &mut tx,
-                subscription_id,
-                contract_description,
-            )
-            .await?;
+            create_contract_description(&mut tx, subscription_id, contract_description).await?;
         }
 
         tx.commit().await?;
 
-        Ok(clone)
+        Ok(created_subscription)
     }
 }
