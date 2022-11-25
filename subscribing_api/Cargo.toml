@@ -8,7 +8,6 @@ edition = "2021"
 [dependencies]
 database_api = { path = "../database_api", features = ["crud", "admin"]}
 axum = { version="0.5.16", features = ["query", "axum-macros"] }
-axum-macros = "0.2.3"
 hyper = { version = "0.14.20", features = ["full"] }
 tower = "0.4.13"
 serde = { version = "1.0.147", features = ["derive"] }

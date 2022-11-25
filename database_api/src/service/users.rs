@@ -1,11 +1,12 @@
-use crate::models::user::User;
 use anyhow::Result;
-use sqlx::{query, query_as, MySqlPool};
+use sqlx::MySqlPool;
 
 mod create;
 mod delete;
 mod get;
+mod get_all;
 mod update;
+mod utils;
 
 #[cfg(feature = "admin")]
 pub struct Users {

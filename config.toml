@@ -1,3 +1,2 @@
 [env]
 DB_URL = "mysql://root:root@localhost/seap_subscriptions"
-#  digital-vibe.ro

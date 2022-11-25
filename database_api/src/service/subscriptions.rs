@@ -1,14 +1,11 @@
-use crate::{
-    full_subscription::FullSubscription,
-    models::{contract_description, subscription::Subscription},
-};
 use anyhow::Result;
-use sqlx::{query, query_as, query_scalar, Acquire, MySql, MySqlExecutor, MySqlPool, Transaction};
+use sqlx::MySqlPool;
 
 mod create;
 mod delete;
 mod get;
 mod get_all;
+mod get_by_email;
 mod update;
 mod utils;
 

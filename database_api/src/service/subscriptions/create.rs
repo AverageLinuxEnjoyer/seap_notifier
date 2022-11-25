@@ -1,15 +1,13 @@
+use super::utils::create_contract_object;
 use super::Subscriptions;
-use crate::{full_subscription::FullSubscription, models::subscription::Subscription};
+use crate::full_subscription::FullSubscription;
+use crate::service::subscriptions::utils::create_contract_description;
 use anyhow::Result;
-use sqlx::{query, query_as, query_scalar};
+use sqlx::{query, query_scalar};
 
 impl Subscriptions {
     #[cfg(feature = "create")]
     pub async fn create(&self, subscription: FullSubscription) -> Result<FullSubscription> {
-        use crate::service::subscriptions::utils::create_contract_description;
-
-        use super::utils::create_contract_object;
-
         let mut tx = self.pool.begin().await?;
 
         let created_subscription = subscription.clone();

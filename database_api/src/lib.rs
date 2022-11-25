@@ -6,7 +6,6 @@ pub mod service;
 mod tests {
     #[test]
     fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+        assert_eq!(4, 4);
     }
 }

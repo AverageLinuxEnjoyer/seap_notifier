@@ -1,20 +1,35 @@
+use crate::{app::App, scraper::Scraper};
 use anyhow::Result;
-use time::OffsetDateTime;
-//use common::advertisment::Advertisment;
+use database_api::service::Service;
+use mailer::Mailer;
+use reqwest::Client;
+use std::time::Duration;
+use time::{macros::datetime, OffsetDateTime};
 
 mod advertisment;
-mod seap;
+mod app;
+mod mailer;
+mod scraper;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let client = reqwest::Client::new();
-    let ads = seap::get_last_adv_ids(client.clone(), 5, OffsetDateTime::now_utc()).await?;
+    let mailer = Mailer::new()?;
+    let service = Service::new().await?;
+    let scraper = Scraper::new(Client::new());
 
-    for (i, ad) in ads.iter().enumerate() {
-        println!("{} --> {:?}\n", i, ad);
-        println!("{:?}\n", seap::get_adv(client.clone(), *ad).await?);
-        println!("===================\n");
-    }
+    let mut app = App::new(service, mailer, scraper, Duration::from_secs(60));
+
+    // let test_date = datetime!(2022-11-17 00:00 UTC);
+    // let now = OffsetDateTime::now_utc();
+    // let ads = scraper.get_last_adv_ids(5, now).await?;
+    // println!("ids: {:?}", ads);
+
+    // for (i, ad) in ads.iter().enumerate() {
+    //     println!("{} --> {:?}\n", i, ad);
+    //     println!("{:?}\n", scraper.get_adv(*ad).await?.publication_date);
+    //     println!("===================\n");
+    // }
+    app.run().await;
 
     Ok(())
 }

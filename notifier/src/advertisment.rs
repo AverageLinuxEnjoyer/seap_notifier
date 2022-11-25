@@ -1,7 +1,6 @@
 use self::{
-    adv_type::AdvType, assigned_user::AssignedUser, contract_type::ContractType, cpv_code::CpvCode,
-    currency::Currency, sys_advertising_notice::SysAdvertisingNotice,
-    sys_notice_state::SysNoticeState,
+    assigned_user::AssignedUser, cpv_code::CpvCode, currency::Currency,
+    sys_advertising_notice::SysAdvertisingNotice, sys_notice_state::SysNoticeState,
 };
 use serde::{Deserialize, Serialize};
 use time::OffsetDateTime;
@@ -25,7 +24,7 @@ pub struct Advertisment {
     pub notice_no: String,
     pub cpv_code: CpvCode,
 
-    pub estimated_value: f32,
+    pub estimated_value: Option<f32>,
     pub max_estimated_value: Option<f32>,
     pub min_estimated_value: Option<f32>,
     pub currency_id: u32,
@@ -33,8 +32,8 @@ pub struct Advertisment {
     pub notice_entity_address_id: u32,
     pub contract_object: String,
     pub contract_description: String,
-    pub contract_related_conditions: String,
-    pub award_criteria: String,
+    pub contract_related_conditions: Option<String>,
+    pub award_criteria: Option<String>,
     pub parent_advertising_notice_id: u32,
     // document ID, URL, Name, UniqueIdentificationCode?
     pub sys_notice_state_id: u32,
@@ -47,8 +46,8 @@ pub struct Advertisment {
     pub publication_date: OffsetDateTime,
 
     pub currency: Currency,
-    pub participation_conditions: String,
-    pub additional_information: String,
+    pub participation_conditions: Option<String>,
+    pub additional_information: Option<String>,
     pub cpv_code_and_name: String,
 
     #[serde(with = "time::serde::rfc3339")]
